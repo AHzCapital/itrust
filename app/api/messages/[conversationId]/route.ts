@@ -17,7 +17,7 @@ export async function GET(_request: Request, { params }: Params) {
   const messages = await prisma.message.findMany({ where: { conversationId }, orderBy: { createdAt: "asc" }, include: { sender: { select: { id: true, username: true, name: true, image: true } } } });
   await prisma.message.updateMany({ where: { conversationId, senderId: { not: user.id }, readAt: null }, data: { readAt: new Date() } });
   const other = conversation.participants.map((p) => p.user).find((p) => p.id !== user.id) || null;
-  return NextResponse.json({ id: conversation.id, other, messages });
+  return NextResponse.json({ id: conversation.id, currentUserId: user.id, other, messages });
 }
 
 export async function POST(request: Request, { params }: Params) {
