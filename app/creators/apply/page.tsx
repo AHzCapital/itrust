@@ -1,0 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import SiteHeader from "@/components/site-header";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
+
+export default function CreatorApplyPage() { const [done,setDone]=useState(false); return <main><SiteHeader/><section className="formHero"><span className="kicker">CREATOR NETWORK</span><h1>Bring the right opportunities to the right people.</h1><p>Tell us about your audience and the categories you understand best.</p></section><section className="formSection"><div className="formCard">{done?<div className="successState"><CheckCircle2 size={44}/><span className="kicker">APPLICATION RECEIVED</span><h2>Thank you.</h2><p>We&apos;ll review your application and contact you if there is a fit for the network.</p></div>:<form onSubmit={e=>{e.preventDefault();setDone(true)}}><span className="kicker">APPLY</span><h2>Creator profile</h2><label>Full name<input required placeholder="Your name"/></label><label>Email<input required type="email" placeholder="you@example.com"/></label><label>Primary platform<input required placeholder="Instagram, YouTube, TikTok, X..."/></label><label>Audience size<input placeholder="Approximate audience"/></label><label>What do you cover?<textarea required rows={4} placeholder="Your niche, audience and the asset categories you understand."/></label><button className="primary" type="submit">Submit application <ArrowRight size={17}/></button></form>}</div></section></main>; }
