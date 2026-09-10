@@ -21,17 +21,19 @@ export async function PUT(request: Request) {
   const username = normalizeUsername(typeof body.username === "string" ? body.username : user.username);
   const bio = typeof body.bio === "string" ? body.bio.trim().slice(0, 180) : user.bio;
   const location = typeof body.location === "string" ? body.location.trim().slice(0, 80) : user.location;
-  const website = typeof body.website === "string" ? body.website.trim().slice(0, 300) : user.website;
-  const image = typeof body.image === "string" && body.image.startsWith("http") ? body.image.slice(0, 1000) : user.image;
+  const rawWebsite = typeof body.website === "string" ? body.website.trim().slice(0, 300) : user.website || "";
+  const image = typeof body.image === "string" && /^https?:\/\//i.test(body.image) ? body.image.slice(0, 1000) : user.image;
 
   if (username.length < 3) return NextResponse.json({ error: "Username must be at least 3 characters." }, { status: 400 });
+  let website: string | null = null;
+  if (rawWebsite) {
+    try { const parsed = new URL(rawWebsite); if (parsed.protocol !== "http:" && parsed.protocol !== "https:") throw new Error(); website = parsed.toString().slice(0, 300); }
+    catch { return NextResponse.json({ error: "Website must be a valid http or https URL." }, { status: 400 }); }
+  }
 
   const collision = await prisma.user.findFirst({ where: { usernameKey: username, NOT: { id: user.id } }, select: { id: true } });
   if (collision) return NextResponse.json({ error: "That username is already taken." }, { status: 409 });
 
-  const updated = await prisma.user.update({
-    where: { id: user.id },
-    data: { name, username, usernameKey: username, bio, location, website: website || null, image: image || null },
-  });
+  const updated = await prisma.user.update({ where: { id: user.id }, data: { name, username, usernameKey: username, bio, location, website, image: image || null } });
   return NextResponse.json(updated);
 }
