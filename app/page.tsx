@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, CheckCircle2, ChevronDown, Menu, Search, ShieldCheck, Sparkles, X } from "lucide-react";
+import { ArrowRight, CheckCircle2, Menu, Search, ShieldCheck, Sparkles, X } from "lucide-react";
 
 const assets = [
   { title: "Contemporary Villa with Nile View", location: "Cairo, Egypt", price: "EGP 45M", type: "Residential", badge: "Verified" },
