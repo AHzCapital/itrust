@@ -65,7 +65,6 @@ export function readStorage<T>(key: string, fallback: T): T {
     const raw = window.localStorage.getItem(key);
     if (!raw) return fallback;
     const value: unknown = JSON.parse(raw);
-
     if (key === PROFILE_KEY) return (sanitizeProfile(value) as T | null) ?? fallback;
     if (key === POSTS_KEY) return (Array.isArray(value) ? value.map(sanitizePost).filter((item): item is SocialPost => item !== null) : fallback) as T;
     if ([FOLLOWERS_KEY, FOLLOWING_KEY, LIKES_KEY, BOOKMARKS_KEY, "trustme-people-following"].includes(key)) {
@@ -88,6 +87,14 @@ export function writeStorage(key: string, value: unknown) {
 
 export function normalizeUsername(value: string) {
   return value.trim().replace(/^@/, "").toLowerCase().replace(/[^a-z0-9_]/g, "").slice(0, 20);
+}
+
+export function decodeRouteSegment(value: string) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
 }
 
 export function profileUrl(username: string) {
