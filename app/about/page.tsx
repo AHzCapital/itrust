@@ -1,0 +1,7 @@
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
+import SiteHeader from "@/components/site-header";
+
+export const metadata = { title: "About Trust.Me — Verified. Valuable. Yours." };
+
+export default function AboutPage(){return <main><SiteHeader/><section className="aboutHero"><span className="kicker">ABOUT TRUST.ME</span><h1>We believe valuable things deserve <em>better information.</em></h1><p>Trust.Me is being built as a verification-first marketplace for valuable assets in Egypt — combining discovery, structured information, and trust into one experience.</p></section><section className="aboutValues"><div><ShieldCheck/><span className="kicker">01 / VERIFY</span><h2>Trust starts with evidence.</h2><p>We put verification and clear documentation at the center of the marketplace experience.</p></div><div><CheckCircle2/><span className="kicker">02 / CLARIFY</span><h2>Make complexity easier to understand.</h2><p>The Asset Passport turns scattered asset information into a clearer record buyers can evaluate.</p></div><div><Sparkles/><span className="kicker">03 / CONNECT</span><h2>Build a better marketplace.</h2><p>Buyers, sellers, and creators each get a clearer role in the journey from discovery to transaction.</p></div></section><section className="aboutBand"><span className="kicker">OUR AMBITION</span><h2>Egypt deserves a world-class<br/><em>trusted asset layer.</em></h2><Link className="primary" href="/assets">Explore the marketplace <ArrowRight size={17}/></Link></section></main>}
