@@ -2,35 +2,33 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bookmark, Compass, Home, LogOut, Menu, Moon, Search, Settings, ShieldCheck, Store, Users, X } from "lucide-react";
+import { Bookmark, Compass, Home, LogOut, Menu, Settings, Store, Users, X } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { normalizeUsername, profileUrl } from "@/lib/social";
 import ThemeSwitcher from "@/components/theme-switcher";
 
-const items = [
-  ["Home", "/", Home], ["Explore", "/explore", Compass], ["People", "/people", Users], ["Assets", "/assets", Store], ["Bookmarks", "/bookmarks", Bookmark],
-] as const;
+const items = [["Home", "/", Home], ["Explore", "/explore", Compass], ["People", "/people", Users], ["Assets", "/assets", Store], ["Bookmarks", "/bookmarks", Bookmark]] as const;
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
-  if (status !== "authenticated" || pathname === "/") return <>{children}</>;
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  useEffect(() => { const close = (e: MouseEvent) => { if (menuRef.current && !menuRef.current.contains(e.target as Node)) setUserMenuOpen(false); }; const key = (e: KeyboardEvent) => e.key === "Escape" && setUserMenuOpen(false); document.addEventListener("mousedown", close); document.addEventListener("keydown", key); return () => { document.removeEventListener("mousedown", close); document.removeEventListener("keydown", key); }; }, []);
+  if (status !== "authenticated") return <>{children}</>;
   const name = session.user?.name || "Member";
   const username = normalizeUsername(name) || "member";
   const image = session.user?.image || "";
   const initials = name.split(/\s+/).slice(0,2).map(x => x[0]).join("").toUpperCase() || "T";
-  const close = () => setMobileOpen(false);
+  const close = () => { setMobileOpen(false); setUserMenuOpen(false); };
   return <div className="appFrame">
     <aside className={mobileOpen ? "appSidebar open" : "appSidebar"}>
       <div className="appBrand"><Link className="logo" href="/" onClick={close}>Trust<span>.</span>Me</Link><button className="sidebarClose" onClick={close} aria-label="Close menu"><X size={18}/></button></div>
       <div className="appNavLabel">Workspace</div>
-      <nav className="appNav">{items.map(([label, href, Icon]) => <Link key={href} href={href} onClick={close} className={pathname === href || (href !== "/" && pathname.startsWith(href)) ? "active" : ""}><Icon size={18}/><span>{label}</span></Link>)}
-        <Link href={profileUrl(username)} onClick={close} className={pathname.startsWith("/u/") || pathname === "/profile" ? "active" : ""}><div className="navAvatar">{image ? <img src={image} alt=""/> : initials}</div><span>Profile</span></Link>
-        <Link href="/settings" onClick={close} className={pathname.startsWith("/settings") ? "active" : ""}><Settings size={18}/><span>Settings</span></Link>
-      </nav>
-      <div className="appSidebarBottom"><div className="appUser"><div className="navAvatar">{image ? <img src={image} alt=""/> : initials}</div><div><strong>{name}</strong><span>@{username}</span></div></div><button className="signOutIcon" onClick={() => signOut({ callbackUrl: "/" })} aria-label="Sign out"><LogOut size={17}/></button></div>
+      <nav className="appNav">{items.map(([label, href, Icon]) => <Link key={href} href={href} onClick={close} className={pathname === href || (href !== "/" && pathname.startsWith(href)) ? "active" : ""}><Icon size={18}/><span>{label}</span></Link>)}<Link href={profileUrl(username)} onClick={close} className={pathname.startsWith("/u/") || pathname === "/profile" ? "active" : ""}><div className="navAvatar">{image ? <img src={image} alt=""/> : initials}</div><span>Profile</span></Link><Link href="/settings" onClick={close} className={pathname.startsWith("/settings") ? "active" : ""}><Settings size={18}/><span>Settings</span></Link></nav>
+      <div className="appSidebarBottom" ref={menuRef}><button className="appUser" onClick={() => setUserMenuOpen(x => !x)} aria-expanded={userMenuOpen}><div className="navAvatar">{image ? <img src={image} alt=""/> : initials}</div><div><strong>{name}</strong><span>@{username}</span></div><span className="userChevron">•••</span></button>{userMenuOpen && <div className="userMenu"><Link href={profileUrl(username)} onClick={close}>View profile</Link><Link href="/settings" onClick={close}>Settings</Link><div className="userMenuTheme"><span>Appearance</span><ThemeSwitcher/></div><button onClick={() => signOut({ callbackUrl: "/" })}><LogOut size={14}/> Sign out</button></div>}</div>
     </aside>
     {mobileOpen && <button className="appOverlay" aria-label="Close menu" onClick={close}/>} 
     <div className="appMain"><header className="mobileAppHeader"><button onClick={() => setMobileOpen(true)} aria-label="Open menu"><Menu size={20}/></button><Link className="logo" href="/">Trust<span>.</span>Me</Link><Link href={profileUrl(username)} aria-label="My profile"><div className="navAvatar">{image ? <img src={image} alt=""/> : initials}</div></Link></header>{children}</div>
