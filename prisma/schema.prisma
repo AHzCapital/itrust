@@ -55,6 +55,7 @@ model Post {
 
 model Conversation {
   id           String                    @id @default(cuid())
+  directKey    String                    @unique
   createdAt    DateTime                  @default(now())
   updatedAt    DateTime                  @updatedAt
   participants ConversationParticipant[]
