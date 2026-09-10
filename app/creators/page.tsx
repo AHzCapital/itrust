@@ -1,0 +1,11 @@
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, Compass, Share2, Sparkles } from "lucide-react";
+import SiteHeader from "@/components/site-header";
+
+const creators = [
+  { name: "Ahmed ElMasry", focus: "Real estate & urban opportunities", assets: 18 },
+  { name: "Nour Khaled", focus: "Design-led residential assets", assets: 12 },
+  { name: "Omar Fathy", focus: "Commercial & investment property", assets: 24 },
+];
+
+export default function CreatorsPage() { return <main><SiteHeader /><section className="creatorHero"><span className="kicker">TRUST.ME CREATOR NETWORK</span><h1>Distribution with <em>context.</em></h1><p>Creators help valuable assets reach the right audience. Trust.Me gives them a structured, transparent way to discover and share verified opportunities.</p><Link className="primary" href="/creators/apply">Apply to the network <ArrowRight size={17}/></Link></section><section className="creatorHow"><div className="creatorPitch"><span className="kicker">WHY CREATORS</span><h2>More than a link.<br/><em>A trusted signal.</em></h2><p>Creators can build an audience around categories they understand while buyers get a clearer path back to a verified asset.</p></div><div className="creatorBenefits"><div><Compass/><strong>Discover</strong><span>Find relevant verified assets.</span></div><div><Share2/><strong>Share</strong><span>Give opportunities useful context.</span></div><div><Sparkles/><strong>Earn</strong><span>Build toward referral economics.</span></div></div></section><section className="creatorList"><div className="sectionHead"><div><span className="kicker">SELECTED CREATORS</span><h2>People building <em>trust.</em></h2></div></div><div className="creatorCards">{creators.map((creator) => <article key={creator.name}><div className="creatorAvatar">{creator.name.split(" ").map((n) => n[0]).join("")}</div><span className="kicker">VERIFIED CREATOR</span><h3>{creator.name}</h3><p>{creator.focus}</p><div><strong>{creator.assets}</strong><span> assets represented</span></div></article>)}</div></section><section className="creatorCta"><CheckCircle2 size={18}/><h2>Know your audience?</h2><p>Join the network and help make verified opportunities easier to discover.</p><Link className="secondary" href="/creators/apply">Become a creator <ArrowRight size={17}/></Link></section></main>; }
