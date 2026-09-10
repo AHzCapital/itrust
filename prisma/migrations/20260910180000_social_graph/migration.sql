@@ -43,10 +43,12 @@ ALTER TABLE "Post" ADD CONSTRAINT "Post_authorId_fkey" FOREIGN KEY ("authorId") 
 
 CREATE TABLE "Conversation" (
   "id" TEXT NOT NULL,
+  "directKey" TEXT NOT NULL,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "Conversation_pkey" PRIMARY KEY ("id")
 );
+CREATE UNIQUE INDEX "Conversation_directKey_key" ON "Conversation"("directKey");
 
 CREATE TABLE "ConversationParticipant" (
   "conversationId" TEXT NOT NULL,
