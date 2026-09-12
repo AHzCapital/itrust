@@ -4,6 +4,7 @@ import "./auth.css";
 import "./profile.css";
 import "./app-shell.css";
 import "./social-home.css";
+import "./premium-ui.css";
 import SessionProviderWrapper from "@/components/session-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 import AppShell from "@/components/app-shell";
